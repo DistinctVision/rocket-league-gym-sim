@@ -15,8 +15,15 @@ except ImportError:
 
 class Gym(Env):
     def __init__(self, match, copy_gamestate_every_step, dodge_deadzone,
-                 tick_skip, gravity, boost_consumption):
+                 tick_skip, gravity, boost_consumption, enable_render: bool = False):
         super().__init__()
+        
+        if enable_render:
+            assert rlviser is not None, '"rlviser_py" must be installed'
+            from .gym_renderer import RLViserRenderer
+            self.renderer = RLViserRenderer(120.0 / tick_skip)
+        else:
+            self.renderer = None
 
         self._match = match
         self.observation_space = match.observation_space
@@ -81,14 +88,14 @@ class Gym(Env):
         return obs, reward, done, info
     
     def render(self):
-        if rlviser is None:
-            raise ImportError("rlviser_py not installed. Please install rlviser_py to use render()")
+        if self.renderer is None:
+            raise RuntimeError('Rendering is not enabled')
 
         if self._prev_state is None:
             return
 
         self.rendered = True
-        rlviser.render_rlgym(self._prev_state)
+        self.renderer.render(self._prev_state)
 
     def close(self):
         if self.rendered:

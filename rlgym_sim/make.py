@@ -21,7 +21,8 @@ def make(tick_skip: int = 8,
          reward_fn: object = DefaultReward(),
          obs_builder: object = DefaultObs(),
          action_parser: object = DefaultAction(),
-         state_setter: object = DefaultState()):
+         state_setter: object = DefaultState(),
+         enable_render: bool = False):
     """
     :param tick_skip: The amount of physics ticks your action will be repeated for
     :param spawn_opponents: Whether you want opponents or not
@@ -53,4 +54,5 @@ def make(tick_skip: int = 8,
                   spawn_opponents=spawn_opponents)
 
     return Gym(match, tick_skip=tick_skip, gravity=gravity, boost_consumption=boost_consumption,
-               copy_gamestate_every_step=copy_gamestate_every_step, dodge_deadzone=dodge_deadzone)
+               copy_gamestate_every_step=copy_gamestate_every_step, dodge_deadzone=dodge_deadzone,
+               enable_render=enable_render)
